@@ -1,0 +1,85 @@
+// Piece.java - Abstract class for all chess pieces
+abstract class Piece {
+    protected String color;
+    protected boolean hasMoved;
+
+    public Piece(String color) {
+        this.color = color;
+        this.hasMoved = false;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public boolean hasMoved() {
+        return hasMoved;
+    }
+
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
+    }
+
+    public abstract boolean isValidMove(int startX, int startY, int endX, int endY, Piece[][] board);
+}
+
+// Pawn.java - Class for Pawn piece
+class Pawn extends Piece {
+    public Pawn(String color) {
+        super(color);
+    }
+
+    @Override
+    public boolean isValidMove(int startX, int startY, int endX, int endY, Piece[][] board) {
+        int direction = (color.equals("white")) ? 1 : -1;
+        if (startX == endX && startY + direction == endY && board[endX][endY] == null) {
+            return true; // Move forward one square
+        }
+        // Implement other movement rules (capture diagonally, first move, promotion)
+        return false;
+    }
+}
+
+// Rook.java - Class for Rook piece
+class Rook extends Piece {
+    public Rook(String color) {
+        super(color);
+    }
+
+    @Override
+    public boolean isValidMove(int startX, int startY, int endX, int endY, Piece[][] board) {
+        if (startX != endX && startY != endY) return false; // Rooks move in straight lines
+        // Check for obstacles (no pieces between start and end)
+        if (startX == endX) { // Moving horizontally
+            int step = (endY > startY) ? 1 : -1;
+            for (int y = startY + step; y != endY; y += step) {
+                if (board[startX][y] != null) return false; // Obstacles in the way
+            }
+        } else if (startY == endY) { // Moving vertically
+            int step = (endX > startX) ? 1 : -1;
+            for (int x = startX + step; x != endX; x += step) {
+                if (board[x][startY] != null) return false; // Obstacles in the way
+            }
+        }
+        return true;
+    }
+}
+
+// ChessBoard.java - Class for the chessboard and its state
+class ChessBoard {
+    private Piece[][] board;
+
+    public ChessBoard() {
+        board = new Piece[8][8];
+        setupBoard();
+    }
+
+    public void setupBoard() {
+        // Place white pieces
+        board[0][0] = new Rook("white");
+        board[0][1] = new Pawn("white");
+        // Place other pieces similarly...
+        // Place black pieces
+        board[7][0] = new Rook("black");
+        board[7][1] = new Pawn("black");
+        //The code is nott compeletedd
